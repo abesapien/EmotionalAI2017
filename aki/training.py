@@ -77,12 +77,18 @@ validation_generator = test_datagen.flow(np.array(X_val)[:,:,:,0:1],to_categoric
 model = Sequential()
 model.add(Conv2D(32, (3, 3), input_shape=(48, 48, 1)))
 model.add(Activation('relu'))
+model.add(Conv2D(32, (3, 3)))
+model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 
 model.add(Conv2D(64, (3, 3)))
 model.add(Activation('relu'))
+model.add(Conv2D(64, (3, 3)))
+model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 
+model.add(Conv2D(128, (3, 3)))
+model.add(Activation('relu'))
 model.add(Conv2D(128, (3, 3)))
 model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
@@ -104,4 +110,4 @@ model.fit_generator(
         validation_data=validation_generator,
         validation_steps=5000 // batch_size)
 
-model.save('emotion.hd5')
+model.save('emotion_l2.hd5')
