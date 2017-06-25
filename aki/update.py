@@ -58,6 +58,9 @@ train_datagen = ImageDataGenerator(
         rescale=1./255,
         shear_range=0.2,
         zoom_range=0.2,
+	rotation_range=10,
+	width_shift_range=0.1,
+	height_shift_range=0.1,	
         horizontal_flip=True)
 
 # this is the augmentation configuration we will use for testing:
@@ -81,7 +84,7 @@ model = load_model('emotion.hd5')
 model.fit_generator(
         train_generator,
         steps_per_epoch=5000 // batch_size,
-        epochs=50,
+        epochs=500,
         validation_data=validation_generator,
         validation_steps=5000 // batch_size)
 
