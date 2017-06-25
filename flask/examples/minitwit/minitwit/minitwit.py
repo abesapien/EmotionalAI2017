@@ -191,7 +191,6 @@ def add_message():
         flash('Your message was recorded')
     return redirect(url_for('timeline'))
 
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     """Logs the user in."""

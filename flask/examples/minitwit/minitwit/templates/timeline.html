@@ -1,11 +1,11 @@
 {% extends "layout.html" %}
 {% block title %}
   {% if request.endpoint == 'public_timeline' %}
-    Public Timeline
+    Public Feed 
   {% elif request.endpoint == 'user_timeline' %}
     {{ profile_user.username }}'s Timeline
   {% else %}
-    My Timeline
+    My Feed 
   {% endif %}
 {% endblock %}
 {% block body %}
