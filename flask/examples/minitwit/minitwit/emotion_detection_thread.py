@@ -37,40 +37,42 @@ class EmotionDetectionThread(threading.Thread):
         self.cascade = cv2.CascadeClassifier(self.cascade_fn)
         self.video_src = 0
         self.interval=0.05
-        self.outputs = []
+        self.outputs = np.zeros((0,7))
         self.cam = create_capture(self.video_src)
         print('capture started\n')
         self.running=True
-
     def run(self):
         print('running thread\n')
         self.model = load_model(self.model_path)
         print('model loaded\n')
         while self.running:
-            print('running thread\n')
+            #print('running thread\n')
             ret, img = self.cam.read()
             gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
             gray = cv2.equalizeHist(gray)
-            t = clock()
+            #t = clock()
             rects = self.detect(gray, self.cascade)
             vis = img.copy()
             #self.draw_rects(vis, rects, (0, 255, 0))
-            outputs=[t]
+            #outputs=[t]
+            outputs = np.array([0,0,0,0,0,0,0])
             for x1, y1, x2, y2 in rects:
                 roi = gray[y1:y2, x1:x2]
                 input = cv2.resize(roi,(48,48))
-                output=self.model.predict_proba(np.reshape(input,(1,48,48,1)),verbose=0)
-                outputs.append(output)
+                outputs=np.array(self.model.predict_proba(np.reshape(input,(1,48,48,1)),verbose=0))
+                if(outputs.argmax() == 6):
+                    outputs = np.array([0,0,0,0,0,0,0])
                 vis_roi = vis[y1:y2, x1:x2]
-                emotions = ('Angry','Disgust','Fear','Happy','Sad','Surprise','Neutral')
             #    draw_str(vis_roi, (20, 20),  emotions[output[0].argmax()])
+            #print(outputs.shape)
+            #print(self.outputs.shape)
             with self.lock:
-                if len(self.outputs)<300:
-                    self.outputs.append(outputs)
+                if len(self.outputs)<20:
+                    self.outputs = np.concatenate((self.outputs, outputs.reshape((1,7))))
                 else:
-                    self.outputs = self.outputs[1:] + outputs
+                    self.outputs = np.concatenate((self.outputs[1:], outputs.reshape((1,7))))
 
-            dt = clock() - t
+            # dt = clock() - t
             #draw_str(vis, (20, 20), 'time: %.1f ms' % (dt*1000))
             #cv2.imshow('facedetect', vis)
             #time.sleep(self.interval)
@@ -84,5 +86,17 @@ class EmotionDetectionThread(threading.Thread):
         cv2.destroyAllWindows()
 
     def getEmotion(self):
+        emotions = ('Angry','Disgust','Fear','Happy','Sad','Surprise','Neutral')
         with self.lock:
-            return self.outputs
+            outputs = self.outputs
+        if outputs.size==0:
+            return emotions[-1]
+        s=outputs.shape
+        if s[0]>10:
+            outputs = outputs[-10:]
+        #print(outputs.shape)
+        #print(outputs)
+        if np.sum(outputs)==0:
+            return emotions[-1]
+        else:
+            return emotions[np.sum(outputs,axis=0).argmax()]

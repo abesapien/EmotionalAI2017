@@ -5,7 +5,11 @@
   {% elif request.endpoint == 'user_timeline' %}
     {{ profile_user.username }}'s Timeline
   {% else %}
-    My Feed 
+    My Feed <img src='/static/emotions/happy.jpg' width='40'> <img src='/static/emotions/suprise.jpg' width='60'><img src='/static/emotions/fear.jpg' width='50'>
+
+	<img src='/static/emotions/disgusted.jpg' width='60'> <img src='/static/emotions/neutral.jpg' width='40'>
+	<img src='/static/emotions/angry.jpg' width='60'> <img src='/static/emotions/sad.jpg' width='40'>
+
   {% endif %}
 {% endblock %}
 {% block body %}
@@ -34,8 +38,11 @@
         </form>
 	
 	<script>
-	    /*$('#feed_text').val($('#feed_text').val() + 'more text'); */
 	    //$( "div:contains('lol')" ).css( "text-decoration", "underline" );
+
+	    $.getJSON( "/get_emotion", function( data ) {
+	        $('#feed_text').val($('#feed_text').val() + '/static/emotions/' + data + '.jpg'); 
+            });
 	</script>
 
       </div>
@@ -46,7 +53,7 @@
     <li><img src="{{ message.email|gravatar(size=48) }}"><p>
       <strong><a href="{{ url_for('user_timeline', username=message.username)
       }}">{{ message.username }}</a></strong>
-      {{ message.text }} </br>
+      {{ message.text }} <img width='30' src="/static/emotions/{{message.emotion}}.jpg"></br>
       <small>&mdash;</small>
   {% else %}
     <li><em>There's no message so far.</em>

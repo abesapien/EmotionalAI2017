@@ -6,7 +6,7 @@
   <h1>LOL Emotional Analyzer</h1>
   <div class="navigation">
   {% if g.user %}
-    <a href="{{ url_for('timeline') }}">my feed</a> |
+    <a href="{{ url_for('timeline') }}">my feed </a> |
     <a href="{{ url_for('public_timeline') }}">public feed</a> |
     <a href="{{ url_for('logout') }}">sign out [{{ g.user.username }}]</a>
   {% else %}
