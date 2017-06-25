@@ -60,6 +60,8 @@ class EmotionDetectionThread(threading.Thread):
                 roi = gray[y1:y2, x1:x2]
                 input = cv2.resize(roi,(48,48))
                 outputs=np.array(self.model.predict_proba(np.reshape(input,(1,48,48,1)),verbose=0))
+                if(outputs.argmax() == 6):
+                    outputs = np.array([0,0,0,0,0,0,0])
                 vis_roi = vis[y1:y2, x1:x2]
             #    draw_str(vis_roi, (20, 20),  emotions[output[0].argmax()])
             #print(outputs.shape)
