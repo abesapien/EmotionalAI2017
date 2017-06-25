@@ -49,12 +49,11 @@ from keras.utils import to_categorical
 
 from keras.models import load_model
 
-for i in range(0,50):	
+for i in range(0,50):
 	model = load_model('emotion_l2_' + str(i) + '.hd5')
 	print(str(i))
-	res=model.evaluate(np.array(X_test)[:,:,:,0:1],to_categorical(y_test),verbose=0)
+	res=model.evaluate(np.array(X_test)[:,:,:,0:1]/255.0,to_categorical(y_test),verbose=0)
 	print(res)
-	res=model.evaluate(np.array(X_val)[:,:,:,0:1],to_categorical(y_val),verbose=0)
+	res=model.evaluate(np.array(X_val)[:,:,:,0:1]/255.0,to_categorical(y_val),verbose=0)
 	print(res)
 	print('\n')
-
