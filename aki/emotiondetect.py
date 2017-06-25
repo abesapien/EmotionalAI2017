@@ -17,7 +17,7 @@ import cv2
 from video import create_capture
 from common import clock, draw_str
 
-model_path = '/Users/amitani/Documents/python/fer2013/emotion.hd5'
+model_path = 'emotion.hd5'
 from keras.models import load_model
 
 def detect(img, cascade):
@@ -42,16 +42,12 @@ if __name__ == '__main__':
     except:
         video_src = 0
     args = dict(args)
-    cascade_fn = args.get('--cascade', "../../data/haarcascades/haarcascade_frontalface_alt.xml")
-    nested_fn  = args.get('--nested-cascade', "../../data/haarcascades/haarcascade_eye.xml")
-
+    cascade_fn = args.get('--cascade', "haarcascade_frontalface_alt.xml")
     cascade = cv2.CascadeClassifier(cascade_fn)
-    nested = cv2.CascadeClassifier(nested_fn)
 
     cam = create_capture(video_src, fallback='synth:bg=../data/lena.jpg:noise=0.05')
 
     model = load_model(model_path)
-
     while True:
         ret, img = cam.read()
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -68,12 +64,6 @@ if __name__ == '__main__':
             vis_roi = vis[y1:y2, x1:x2]
             emotions = ('Angry','Disgust','Fear','Happy','Sad','Surprise','Neutral')
             draw_str(vis_roi, (20, 20),  emotions[output[0].argmax()])
-        #if not nested.empty():
-        #    for x1, y1, x2, y2 in rects:
-        #        roi = gray[y1:y2, x1:x2]
-        #        vis_roi = vis[y1:y2, x1:x2]
-        #        subrects = detect(roi.copy(), nested)
-        #        draw_rects(vis_roi, subrects, (255, 0, 0))
         dt = clock() - t
 
         draw_str(vis, (20, 20), 'time: %.1f ms' % (dt*1000))
