@@ -10,7 +10,7 @@
 """
 import emotion_detection_thread
 import time
-import timeit
+import re
 from flask import jsonify
 
 from sqlite3 import dbapi2 as sqlite3
@@ -190,10 +190,24 @@ def add_message():
     if 'user_id' not in session:
         abort(401)
     if request.form['text']:
+	
+	e = re.compile(".*(happy|sad|angry|neutral|disgust|suprise|fear)", re.IGNORECASE)
+	result = e.search(request.form['text'])    
+	print "RESULT"
+        print result
+	
+	if result: 
+	    emotion = result.group(1)     
+	    print "EMO:"
+	    print emotion
+	else:
+            print "NOPE"
+	    emotion = 'neutral'
+
         db = get_db()
-        db.execute('''insert into message (author_id, text, pub_date)
-          values (?, ?, ?)''', (session['user_id'], request.form['text'],
-                                int(time.time())))
+        db.execute('''insert into message (author_id, text, pub_date, emotion)
+          values (?, ?, ?, ?)''', (session['user_id'], request.form['text'],
+                                int(time.time()), emotion))
         db.commit()
         flash('Your message was recorded')
     return redirect(url_for('timeline'))

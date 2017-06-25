@@ -38,7 +38,6 @@
         </form>
 	
 	<script>
-	    $('#feed_text').val($('#feed_text').val() + 'happy'); 
 	    //$( "div:contains('lol')" ).css( "text-decoration", "underline" );
 
 	    $.getJSON( "/get_emotion", function( data ) {
@@ -54,7 +53,7 @@
     <li><img src="{{ message.email|gravatar(size=48) }}"><p>
       <strong><a href="{{ url_for('user_timeline', username=message.username)
       }}">{{ message.username }}</a></strong>
-      {{ message.text }} </br>
+      {{ message.text }} <img width='30' src="/static/emotions/{{message.emotion}}.jpg"></br>
       <small>&mdash;</small>
   {% else %}
     <li><em>There's no message so far.</em>
