@@ -41,7 +41,7 @@ class EmotionDetectionThread(threading.Thread):
         self.cam = create_capture(self.video_src)
         print('capture started\n')
         self.running=True
-        cv2.namedWindow( "facedetect", cv2.WINDOW_AUTOSIZE );
+        #cv2.namedWindow( "facedetect", cv2.WINDOW_AUTOSIZE );
     def run(self):
         print('running thread\n')
         self.model = load_model(self.model_path)
@@ -54,7 +54,7 @@ class EmotionDetectionThread(threading.Thread):
             #t = clock()
             rects = self.detect(gray, self.cascade)
             vis = img.copy()
-            self.draw_rects(vis, rects, (0, 255, 0))
+            #self.draw_rects(vis, rects, (0, 255, 0))
             #outputs=[t]
             outputs = np.array([0,0,0,0,0,0,0])
             for x1, y1, x2, y2 in rects:
@@ -64,7 +64,7 @@ class EmotionDetectionThread(threading.Thread):
                 if(outputs.argmax() == 6):
                     outputs = np.array([0,0,0,0,0,0,0])
                 vis_roi = vis[y1:y2, x1:x2]
-                draw_str(vis_roi, (20, 20),  emotions[output[0].argmax()])
+                #draw_str(vis_roi, (20, 20),  emotions[output[0].argmax()])
             #print(outputs.shape)
             #print(self.outputs.shape)
             with self.lock:
@@ -75,7 +75,7 @@ class EmotionDetectionThread(threading.Thread):
 
             # dt = clock() - t
             # draw_str(vis, (20, 20), 'time: %.1f ms' % (dt*1000))
-            cv2.imshow('facedetect', vis)
+            #cv2.imshow('facedetect', vis)
             #time.sleep(self.interval)
     def __enter__(self):
         self.start()
