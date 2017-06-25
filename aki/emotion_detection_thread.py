@@ -1,3 +1,6 @@
+# getEmotion returns outputs, which is a list of information from last 300 frames.
+# each element is a list containing time and probability of emotions of all the faces in the frame
+
 from __future__ import print_function
 
 import threading
