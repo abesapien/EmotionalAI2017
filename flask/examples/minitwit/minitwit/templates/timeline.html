@@ -29,9 +29,15 @@
       <div class="twitbox">
         <h3>What's on your mind {{ g.user.username }}?</h3>
         <form action="{{ url_for('add_message') }}" method="post">
-          <p><input type="text" name="text" size="60"><!--
-          --><input type="submit" value="Share">
+          <p><input id="feed_text" type="text" name="text" size="60"><!--
+          --><input id="submit_btn" type="submit" value="Share">
         </form>
+	
+	<script>
+	    /*$('#feed_text').val($('#feed_text').val() + 'more text'); */
+	    //$( "div:contains('lol')" ).css( "text-decoration", "underline" );
+	</script>
+
       </div>
     {% endif %}
   {% endif %}
@@ -40,8 +46,8 @@
     <li><img src="{{ message.email|gravatar(size=48) }}"><p>
       <strong><a href="{{ url_for('user_timeline', username=message.username)
       }}">{{ message.username }}</a></strong>
-      {{ message.text }}
-      <small>&mdash; {{ message.pub_date|datetimeformat }}</small>
+      {{ message.text }} </br>
+      <small>&mdash;</small>
   {% else %}
     <li><em>There's no message so far.</em>
   {% endfor %}

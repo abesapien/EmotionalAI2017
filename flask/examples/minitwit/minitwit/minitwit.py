@@ -8,15 +8,17 @@
     :copyright: (c) 2015 by Armin Ronacher.
     :license: BSD, see LICENSE for more details.
 """
-
+import emotion_detection_thread
 import time
+import timeit
+from flask import jsonify
+
 from sqlite3 import dbapi2 as sqlite3
 from hashlib import md5
 from datetime import datetime
 from flask import Flask, request, session, url_for, redirect, \
      render_template, abort, g, flash, _app_ctx_stack
 from werkzeug import check_password_hash, generate_password_hash
-
 
 # configuration
 DATABASE = '/tmp/minitwit.db'
@@ -29,6 +31,8 @@ app = Flask('minitwit')
 app.config.from_object(__name__)
 app.config.from_envvar('MINITWIT_SETTINGS', silent=True)
 
+edt=emotion_detection_thread.EmotionDetectionThread()
+edt.start()
 
 def get_db():
     """Opens a new database connection if there is none yet for the
@@ -105,6 +109,8 @@ def timeline():
     """
     if not g.user:
         return redirect(url_for('public_timeline'))
+
+      
     return render_template('timeline.html', messages=query_db('''
         select message.*, user.* from message, user
         where message.author_id = user.user_id and (
@@ -112,8 +118,9 @@ def timeline():
             user.user_id in (select whom_id from follower
                                     where who_id = ?))
         order by message.pub_date desc limit ?''',
-        [session['user_id'], session['user_id'], PER_PAGE]))
-
+        [session['user_id'], session['user_id'], PER_PAGE])
+)
+	
 
 @app.route('/public')
 def public_timeline():
@@ -241,7 +248,10 @@ def register():
             return redirect(url_for('login'))
     return render_template('register.html', error=error)
 
-
+@app.route('/get_emotion')
+def get_emotion():
+    return jsonify(edt.getEmotion())
+    
 @app.route('/logout')
 def logout():
     """Logs the user out."""

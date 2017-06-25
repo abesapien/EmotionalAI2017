@@ -19,3 +19,4 @@ create table message (
   text text not null,
   pub_date integer
 );
+
