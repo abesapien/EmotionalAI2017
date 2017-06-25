@@ -10,7 +10,6 @@ import cv2
 
 from face_detect import find_faces
 
-
 def remove_old_set(emotions):
     """
     Removes old images produced from dataset.

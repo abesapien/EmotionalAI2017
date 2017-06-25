@@ -10,7 +10,7 @@ import cv2
 from image_commons import load_image
 
 if cv2.__version__ != '3.1.0':
-    fishface = cv2.createFisherFaceRecognizer()
+    fishface = cv2.face.createFisherFaceRecognizer()
 else:
     fishface = cv2.face.createFisherFaceRecognizer()
 training_set_size = 0.95
@@ -18,10 +18,13 @@ training_set_size = 0.95
 
 def get_files(emotion):
     """
-    gets paths to all images of given emotion and splits them into two sets: trainging and test
+    gets paths to all images of given emotion and splits them into two sets: trainjing and test
     :param emotion: name of emotion to find images for
     """
-    files = glob.glob("data/sorted_set/%s/*" % emotion)
+
+    print "emotion: " + emotion
+
+    files = glob.glob("./data/sorted_set/" + emotion + "/*")
     random.shuffle(files)
     training = files[:int(len(files) * training_set_size)]
     prediction = files[-int(len(files) * (1 - training_set_size)):]
@@ -54,6 +57,7 @@ def run_recognizer():
     """
     method is creating datasets using make_sets method, then it trains a model and tet with a test set. It returns correct guesses to test data count ratio
     """
+
     training_data, training_labels, prediction_data, prediction_labels = make_sets()
 
     print("size of training set is:", len(training_labels), "images")
@@ -64,12 +68,12 @@ def run_recognizer():
 
     return ((100 * correct) / len(prediction_data))
 
-
 if __name__ == '__main__':
-    emotions = ["neutral", "anger", "disgust", "happy", "sadness", "surprise"]
+    #emotions = ["neutral", "anger", "disgust", "happy", "sadness", "surprise"]
+    emotions = ["surprise", "neutral"]
 
     for i in range(0, 1):
         correct = run_recognizer()
         print("got", correct, "percent correct!")
 
-    fishface.save('models/emotion_detection_model.xml')
+    fishface.save('./models/emotion_detection_model.xml')

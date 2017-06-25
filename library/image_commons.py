@@ -36,7 +36,8 @@ def load_image(source_path):
     :return: Image loaded from the path and converted to grayscale.
     """
     source_image = cv2.imread(source_path)
-    return cv2.cvtColor(source_image, cv2.COLOR_BGR2GRAY)
+    #return cv2.cvtColor(source_image, cv2.COLOR_BGR2GRAY)
+    return source_image
 
 
 def draw_with_alpha(source_image, image_to_draw, coordinates):
