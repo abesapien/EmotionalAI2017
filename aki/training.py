@@ -56,8 +56,8 @@ from keras.utils import to_categorical
 # this is the augmentation configuration we will use for training
 train_datagen = ImageDataGenerator(
         rescale=1./255,
-        shear_range=0.2,
-        zoom_range=0.2,
+        shear_range=0.15,
+        zoom_range=0.15,
         horizontal_flip=True)
 
 # this is the augmentation configuration we will use for testing:
@@ -79,16 +79,16 @@ model.add(Conv2D(32, (3, 3), input_shape=(48, 48, 1)))
 model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 
-model.add(Conv2D(32, (3, 3)))
-model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-
 model.add(Conv2D(64, (3, 3)))
 model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 
+model.add(Conv2D(128, (3, 3)))
+model.add(Activation('relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+
 model.add(Flatten())  # this converts our 3D feature maps to 1D feature vectors
-model.add(Dense(128))
+model.add(Dense(256))
 model.add(Activation('relu'))
 model.add(Dense(7))
 model.add(Activation('softmax'))
@@ -100,7 +100,7 @@ model.compile(loss='categorical_crossentropy',
 model.fit_generator(
         train_generator,
         steps_per_epoch=2000 // batch_size,
-        epochs=50,
+        epochs=200,
         validation_data=validation_generator,
         validation_steps=5000 // batch_size)
 
